@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cardápio Online</title>
+  <title>Cardápio Online - Pizzaria Bella Vita</title>
   <style>
     :root {
       --primaria: #c44a0a;
@@ -14,6 +15,7 @@
       --fundo: #f5f5f5;
       --branco: #ffffff;
       --badge-desconto: #e74c3c;
+      --whatsapp: #25D366;
     }
 
     * {
@@ -26,11 +28,10 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--fundo);
       color: var(--texto);
-      padding-bottom: 70px;
+      padding-bottom: 140px;
       line-height: 1.5;
     }
 
-    /* HEADER */
     header {
       background: linear-gradient(135deg, var(--primaria) 0%, var(--primaria-escura) 100%);
       color: var(--branco);
@@ -38,7 +39,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     .header-content {
@@ -75,13 +76,6 @@
       flex-wrap: wrap;
     }
 
-    .header-meta span {
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-
-    /* SUBHEADER */
     .subheader {
       background: var(--branco);
       padding: 0.8rem 1rem;
@@ -105,18 +99,34 @@
       font-weight: 600;
     }
 
-    .pedido-minimo {
-      color: var(--texto-claro);
+    .busca-container {
+      max-width: 900px;
+      margin: 1rem auto;
+      padding: 0 1rem;
     }
 
-    /* CONTAINER */
+    .busca-input {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.2s;
+      background: var(--branco);
+    }
+
+    .busca-input:focus {
+      outline: none;
+      border-color: var(--primaria);
+      box-shadow: 0 0 0 3px rgba(196, 74, 10, 0.1);
+    }
+
     .container {
       max-width: 900px;
       margin: 0 auto;
       padding: 1rem;
     }
 
-    /* SEÇÃO DE CATEGORIAS */
     .secao {
       margin-bottom: 2rem;
     }
@@ -131,7 +141,6 @@
       color: var(--texto);
     }
 
-    /* TABS DE NAVEGAÇÃO */
     .tabs {
       display: flex;
       background: var(--branco);
@@ -140,7 +149,7 @@
       left: 0;
       width: 100%;
       border-top: 1px solid #e0e0e0;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
       z-index: 100;
     }
 
@@ -152,13 +161,8 @@
       font-weight: 500;
       font-size: 0.85rem;
       color: var(--texto-claro);
-      transition: all 0.2s ease;
+      transition: all 0.2s;
       border-top: 3px solid transparent;
-      position: relative;
-    }
-
-    .tab:active {
-      background: #f8f8f8;
     }
 
     .tab.active {
@@ -167,7 +171,6 @@
       font-weight: 600;
     }
 
-    /* CARDS DE PRODUTOS */
     .produtos {
       display: none;
     }
@@ -181,18 +184,21 @@
       border-radius: 12px;
       overflow: hidden;
       margin-bottom: 0.9rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
       display: flex;
       gap: 1rem;
       padding: 0.9rem;
-      transition: transform 0.2s, box-shadow 0.2s;
-      cursor: pointer;
+      transition: all 0.2s;
       position: relative;
+      cursor: pointer;
     }
 
     .card:active {
       transform: scale(0.98);
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .card.hidden {
+      display: none;
     }
 
     .card-imagem {
@@ -217,7 +223,7 @@
       border-radius: 8px;
       font-size: 0.75rem;
       font-weight: 700;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .card-info {
@@ -259,26 +265,417 @@
       text-decoration: line-through;
     }
 
-    /* GRID PARA DESTAQUES */
-    .grid-destaques {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    .controles-quantidade {
+      position: absolute;
+      bottom: 0.9rem;
+      right: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 10;
+    }
+
+    .btn-adicionar {
+      background: var(--primaria);
+      color: var(--branco);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-adicionar:active {
+      transform: scale(0.95);
+      background: var(--primaria-escura);
+    }
+
+    .btn-quantidade {
+      background: var(--primaria);
+      color: var(--branco);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .btn-quantidade:active {
+      transform: scale(0.9);
+      background: var(--primaria-escura);
+    }
+
+    .quantidade-display {
+      min-width: 32px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--texto);
+      background: var(--fundo);
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+    }
+
+    .carrinho-flutuante {
+      position: fixed;
+      left: 0;
+      width: 100%;
+      background: var(--whatsapp);
+      color: var(--branco);
+      padding: 0.9rem;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+      z-index: 101;
+      display: none;
+      transition: bottom 0.18s ease;
+    }
+
+    .carrinho-flutuante.show {
+      display: block;
+    }
+
+    .carrinho-content {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       gap: 1rem;
+    }
+
+    .carrinho-info {
+      flex: 1;
+    }
+
+    .carrinho-info strong {
+      font-size: 1.1rem;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    .carrinho-info small {
+      opacity: 0.95;
+    }
+
+    .btn-finalizar {
+      background: var(--branco);
+      color: var(--whatsapp);
+      border: none;
+      padding: 0.9rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .btn-finalizar:active {
+      transform: scale(0.95);
+    }
+
+    .grid-destaques {
+      position: relative;
+      overflow: hidden;
       margin-bottom: 1.5rem;
     }
 
-    @media (max-width: 600px) {
-      .grid-destaques {
-        grid-template-columns: 1fr;
-      }
+    .carrossel-container {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding: 0.5rem 0;
+      scroll-snap-type: x mandatory;
     }
 
-    /* ANIMAÇÕES SUAVES */
+    .carrossel-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .carrossel-container .card {
+      min-width: 100%;
+      max-width: 100%;
+      flex-shrink: 0;
+      margin-bottom: 0;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
+
+    .btn-carrossel {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--branco);
+      border: 2px solid #e0e0e0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: var(--texto);
+      z-index: 10;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-carrossel:hover {
+      background: var(--primaria);
+      color: var(--branco);
+      border-color: var(--primaria);
+    }
+
+    .btn-carrossel:active {
+      transform: translateY(-50%) scale(0.9);
+    }
+
+    .btn-carrossel.prev {
+      left: -15px;
+    }
+
+    .btn-carrossel.next {
+      right: -15px;
+    }
+
+    .btn-carrossel:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* PÁGINA DE DETALHES DO PRODUTO */
+    .produto-detalhes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--branco);
+      z-index: 200;
+      display: none;
+      overflow-y: auto;
+    }
+
+    .produto-detalhes.show {
+      display: block;
+    }
+
+    .detalhes-header {
+      position: sticky;
+      top: 0;
+      background: var(--branco);
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 1px solid #e0e0e0;
+      z-index: 10;
+    }
+
+    .btn-voltar {
+      background: var(--fundo);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.3rem;
+      transition: all 0.2s;
+    }
+
+    .btn-voltar:active {
+      transform: scale(0.9);
+    }
+
+    .detalhes-imagem {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      background: var(--fundo);
+    }
+
+    .detalhes-content {
+      padding: 1.5rem;
+      max-width: 900px;
+      margin: 0 auto;
+      padding-bottom: 120px;
+    }
+
+    .detalhes-titulo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--texto);
+    }
+
+    .detalhes-preco {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .detalhes-preco-atual {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--primaria);
+    }
+
+    .detalhes-preco-antigo {
+      font-size: 1.2rem;
+      color: var(--texto-claro);
+      text-decoration: line-through;
+    }
+
+    .detalhes-badge {
+      background: var(--badge-desconto);
+      color: var(--branco);
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .detalhes-descricao {
+      font-size: 1rem;
+      color: var(--texto-claro);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .detalhes-observacoes {
+      margin-bottom: 2rem;
+    }
+
+    .detalhes-observacoes label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--texto);
+    }
+
+    .observacoes-input {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.9rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      resize: vertical;
+      transition: all 0.2s;
+    }
+
+    .observacoes-input:focus {
+      outline: none;
+      border-color: var(--primaria);
+      box-shadow: 0 0 0 3px rgba(196, 74, 10, 0.1);
+    }
+
+    .detalhes-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: var(--branco);
+      padding: 1rem;
+      border-top: 1px solid #e0e0e0;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+      z-index: 20;
+    }
+
+    .detalhes-footer-content {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .detalhes-controles {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: var(--fundo);
+      padding: 0.5rem;
+      border-radius: 10px;
+    }
+
+    .btn-detalhes-quantidade {
+      background: var(--branco);
+      border: 2px solid #e0e0e0;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--texto);
+      transition: all 0.2s;
+    }
+
+    .btn-detalhes-quantidade:active {
+      transform: scale(0.9);
+      border-color: var(--primaria);
+    }
+
+    .detalhes-quantidade-display {
+      min-width: 50px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--texto);
+    }
+
+    .btn-detalhes-adicionar {
+      flex: 1;
+      background: var(--primaria);
+      color: var(--branco);
+      border: none;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-detalhes-adicionar:active {
+      transform: scale(0.98);
+      background: var(--primaria-escura);
+    }
+
     @keyframes fadeIn {
       from {
         opacity: 0;
         transform: translateY(10px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -289,8 +686,28 @@
       animation: fadeIn 0.3s ease-out;
     }
 
-    /* RESPONSIVIDADE ADICIONAL */
-    @media (max-width: 480px) {
+    @media (max-width:600px) {
+      .carrossel-container .card {
+        min-width: 100%;
+        max-width: 100%;
+      }
+
+      .btn-carrossel {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+      }
+
+      .btn-carrossel.prev {
+        left: -10px;
+      }
+
+      .btn-carrossel.next {
+        right: -10px;
+      }
+    }
+
+    @media (max-width:480px) {
       .header-content {
         gap: 0.8rem;
       }
@@ -305,105 +722,159 @@
         font-size: 1.1rem;
       }
 
-      .header-meta {
-        font-size: 0.8rem;
-      }
-
       .card img {
         width: 85px;
         height: 85px;
       }
 
-      .secao-titulo {
-        font-size: 1.15rem;
+      .btn-adicionar {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+      }
+
+      .btn-quantidade {
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
+      }
+
+      .detalhes-imagem {
+        height: 250px;
+      }
+
+      .detalhes-footer-content {
+        flex-direction: column;
+        gap: 0.8rem;
+      }
+
+      .detalhes-controles {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .btn-detalhes-adicionar {
+        width: 100%;
       }
     }
   </style>
 </head>
+
 <body>
 
-  <!-- HEADER -->
   <header>
     <div class="header-content">
       <div class="logo">🍕</div>
       <div class="header-info">
         <h1>Pizzaria Bella Vita</h1>
         <div class="header-meta">
-          <span>☕ Desde 2018</span>
-          <span>❤️</span>
+          <span>Desde 2018</span>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- SUBHEADER -->
   <div class="subheader">
     <div class="subheader-content">
       <span class="status-aberto">Aberto até 23h</span>
+      <span class="pedido-minimo">Pedido mín. R$ 25,00</span>
     </div>
   </div>
 
-  <!-- CONTEÚDO -->
+  <div class="busca-container">
+    <input type="text" class="busca-input" id="buscaInput" placeholder="Buscar no cardápio...">
+  </div>
+
   <div class="container">
-    
-    <!-- SEÇÃO: MAIS PEDIDOS -->
+
+
     <div class="secao">
       <h2 class="secao-titulo">Os mais pedidos</h2>
       <div class="grid-destaques">
-        <div class="card">
-          <div class="card-imagem">
-            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400" alt="Pizza Margherita">
-          </div>
-          <div class="card-info">
-            <div>
-              <h3>Margherita</h3>
-              <p>Molho de tomate, mussarela de búfala, manjericão fresco e azeite.</p>
-            </div>
-            <div class="preco-container">
-              <span class="preco">R$ 38,00</span>
-            </div>
-          </div>
-        </div>
+        <button class="btn-carrossel prev" onclick="scrollCarrossel(-1)" id="btnPrev">←</button>
+        <button class="btn-carrossel next" onclick="scrollCarrossel(1)" id="btnNext">→</button>
 
-        <div class="card">
-          <div class="card-imagem">
-            <img src="https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?w=400" alt="Pizza Pepperoni">
-            <span class="badge-desconto">15%</span>
-          </div>
-          <div class="card-info">
-            <div>
-              <h3>Pepperoni Especial</h3>
-              <p>Generosa camada de pepperoni com queijo derretido.</p>
+        <div class="carrossel-container" id="carrosselContainer">
+          <div class="card" data-nome="Margherita" data-preco="38.00" data-descricao="Molho de tomate, mussarela de búfala, manjericão fresco e azeite extra virgem. Uma clássica pizza italiana preparada com ingredientes selecionados." data-imagem="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800" onclick="abrirDetalhes(this)">
+            <div class="card-imagem">
+              <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400" alt="Pizza Margherita">
             </div>
-            <div class="preco-container">
-              <span class="preco">R$ 42,50</span>
-              <span class="preco-antigo">R$ 50,00</span>
+            <div class="card-info">
+              <div>
+                <h3>Margherita</h3>
+                <p>Molho de tomate, mussarela de búfala, manjericão fresco e azeite.</p>
+              </div>
+              <div class="preco-container">
+                <span class="preco">R$ 38,00</span>
+              </div>
+            </div>
+            <div class="controles-quantidade" id="ctrl-Margherita" onclick="event.stopPropagation()">
+              <button class="btn-adicionar" onclick="adicionarAoCarrinho('Margherita', 38.00)">Adicionar</button>
+            </div>
+          </div>
+
+          <div class="card" data-nome="Pepperoni Especial" data-preco="42.50" data-preco-antigo="50.00" data-desconto="15%" data-descricao="Generosa camada de pepperoni importado com queijo mussarela derretido e orégano." data-imagem="https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?w=800" onclick="abrirDetalhes(this)">
+            <div class="card-imagem">
+              <img src="https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?w=400" alt="Pizza Pepperoni">
+              <span class="badge-desconto">15%</span>
+            </div>
+            <div class="card-info">
+              <div>
+                <h3>Pepperoni Especial</h3>
+                <p>Generosa camada de pepperoni com queijo derretido.</p>
+              </div>
+              <div class="preco-container">
+                <span class="preco">R$ 42,50</span>
+                <span class="preco-antigo">R$ 50,00</span>
+              </div>
+            </div>
+            <div class="controles-quantidade" id="ctrl-Pepperoni Especial" onclick="event.stopPropagation()">
+              <button class="btn-adicionar" onclick="adicionarAoCarrinho('Pepperoni Especial', 42.50)">Adicionar</button>
+            </div>
+          </div>
+
+          <div class="card" data-nome="Quatro Queijos" data-preco="42.00" data-descricao="Mix irresistível de mussarela, provolone, gorgonzola e parmesão. Para os verdadeiros amantes de queijo!" data-imagem="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800" onclick="abrirDetalhes(this)">
+            <div class="card-imagem">
+              <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400" alt="Pizza Quatro Queijos">
+            </div>
+            <div class="card-info">
+              <div>
+                <h3>Quatro Queijos</h3>
+                <p>Mix irresistível de mussarela, provolone, gorgonzola e parmesão.</p>
+              </div>
+              <div class="preco-container">
+                <span class="preco">R$ 42,00</span>
+              </div>
+            </div>
+            <div class="controles-quantidade" id="ctrl-Quatro Queijos Destaque" onclick="event.stopPropagation()">
+              <button class="btn-adicionar" onclick="adicionarAoCarrinho('Quatro Queijos', 42.00)">Adicionar</button>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- TRADICIONAIS -->
     <div class="produtos active" id="tradicionais">
-      <h2 class="secao-titulo">Tradicionais 🍕</h2>
-      
-      <div class="card">
+      <h2 class="secao-titulo">Tradicionais</h2>
+
+      <div class="card" data-nome="Mussarela" data-preco="32.00" data-descricao="Clássica pizza de mussarela com molho especial de tomate e orégano. Receita tradicional que conquista todos os paladares." data-imagem="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=800" onclick="abrirDetalhes(this)">
         <div class="card-imagem">
           <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400" alt="Pizza Mussarela">
         </div>
         <div class="card-info">
           <div>
-            <h3>Mussarela</h3>
-            <p>Clássica pizza de mussarela com molho especial de tomate e orégano.</p>
+            <h3>Frango com Catupiry</h3>
+            <p>Frango desfiado temperado com Catupiry original e milho.</p>
           </div>
           <div class="preco-container">
-            <span class="preco">R$ 32,00</span>
+            <span class="preco">R$ 40,00</span>
+            <span class="preco-antigo">R$ 44,00</span>
           </div>
+        </div>
+        <div class="controles-quantidade" id="ctrl-Frango com Catupiry" onclick="event.stopPropagation()">
+          <button class="btn-adicionar" onclick="adicionarAoCarrinho('Frango com Catupiry', 40.00)">Adicionar</button>
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-nome="Calabresa" data-preco="35.00" data-descricao="Calabresa fatiada, cebola roxa e orégano sobre molho de tomate. Um sabor marcante e tradicional." data-imagem="https://images.unsplash.com/photo-1628840042765-356cda07504e?w=800" onclick="abrirDetalhes(this)">
         <div class="card-imagem">
           <img src="https://images.unsplash.com/photo-1628840042765-356cda07504e?w=400" alt="Pizza Calabresa">
         </div>
@@ -416,9 +887,12 @@
             <span class="preco">R$ 35,00</span>
           </div>
         </div>
+        <div class="controles-quantidade" id="ctrl-Calabresa" onclick="event.stopPropagation()">
+          <button class="btn-adicionar" onclick="adicionarAoCarrinho('Calabresa', 35.00)">Adicionar</button>
+        </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-nome="Portuguesa" data-preco="38.00" data-descricao="Presunto, ovos, cebola, azeitona e mussarela. A combinação portuguesa que todos amam!" data-imagem="https://images.unsplash.com/photo-1595854341625-f33ee10dbf94?w=800" onclick="abrirDetalhes(this)">
         <div class="card-imagem">
           <img src="https://images.unsplash.com/photo-1595854341625-f33ee10dbf94?w=400" alt="Pizza Portuguesa">
         </div>
@@ -431,14 +905,16 @@
             <span class="preco">R$ 38,00</span>
           </div>
         </div>
+        <div class="controles-quantidade" id="ctrl-Portuguesa" onclick="event.stopPropagation()">
+          <button class="btn-adicionar" onclick="adicionarAoCarrinho('Portuguesa', 38.00)">Adicionar</button>
+        </div>
       </div>
     </div>
 
-    <!-- ESPECIAIS -->
     <div class="produtos" id="especiais">
-      <h2 class="secao-titulo">Especiais ⭐</h2>
-      
-      <div class="card">
+      <h2 class="secao-titulo">Especiais</h2>
+
+      <div class="card" data-nome="Quatro Queijos" data-preco="42.00" data-descricao="Mix irresistível de mussarela, provolone, gorgonzola e parmesão. Para os verdadeiros amantes de queijo!" data-imagem="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800" onclick="abrirDetalhes(this)">
         <div class="card-imagem">
           <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400" alt="Pizza Quatro Queijos">
         </div>
@@ -451,46 +927,16 @@
             <span class="preco">R$ 42,00</span>
           </div>
         </div>
-      </div>
-
-      <div class="card">
-        <div class="card-imagem">
-          <img src="https://media.istockphoto.com/id/1255499562/pt/foto/chicken-pizza-with-catupiry-cheese-in-brazil-it-is-called-chicken-pizza-with-catupiry.webp?a=1&b=1&s=612x612&w=0&k=20&c=fHWnEgS-Qwu0qP3dJtDRnKiCvCv8fKNtY145torbIzM=" alt="Pizza Frango com Catupiry">
-          <span class="badge-desconto">10%</span>
-        </div>
-        <div class="card-info">
-          <div>
-            <h3>Frango com Catupiry</h3>
-            <p>Frango desfiado temperado com Catupiry original e milho.</p>
-          </div>
-          <div class="preco-container">
-            <span class="preco">R$ 40,00</span>
-            <span class="preco-antigo">R$ 44,00</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-imagem">
-          <img src="https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?w=400" alt="Pizza Atum">
-        </div>
-        <div class="card-info">
-          <div>
-            <h3>Atum</h3>
-            <p>Atum sólido, cebola, azeitona e mussarela gratinada.</p>
-          </div>
-          <div class="preco-container">
-            <span class="preco">R$ 45,00</span>
-          </div>
+        <div class="controles-quantidade" id="ctrl-Quatro Queijos" onclick="event.stopPropagation()">
+          <button class="btn-adicionar" onclick="adicionarAoCarrinho('Quatro Queijos', 42.00)">Adicionar</button>
         </div>
       </div>
     </div>
 
-    <!-- DOCES -->
     <div class="produtos" id="doces">
-      <h2 class="secao-titulo">Doces 🍫</h2>
-      
-      <div class="card">
+      <h2 class="secao-titulo">Doces</h2>
+
+      <div class="card" data-nome="Chocolate" data-preco="30.00" data-descricao="Deliciosa pizza doce com chocolate ao leite derretido. Perfeita para sobremesa!" data-imagem="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800" onclick="abrirDetalhes(this)">
         <div class="card-imagem">
           <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400" alt="Pizza Chocolate">
         </div>
@@ -503,46 +949,16 @@
             <span class="preco">R$ 30,00</span>
           </div>
         </div>
-      </div>
-
-      <div class="card">
-        <div class="card-imagem">
-          <img src="https://media.istockphoto.com/id/2197076618/pt/foto/chocolate-pizza.webp?a=1&b=1&s=612x612&w=0&k=20&c=fCy-mST21PuslcXUoo9rFry3sijJ355vSSfCREYV2jc=" alt="Pizza Chocolate com Castanhas">
-        </div>
-        <div class="card-info">
-          <div>
-            <h3>Pizza Chocolate com Castanhas</h3>
-            <p>Deliciosa pizza doce com chocolate ao leite e castanhas crocantes.</p>
-          </div>
-          <div class="preco-container">
-            <span class="preco">R$ 32,00</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-imagem">
-          <img src="https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=400" alt="Pizza Brigadeiro">
-          <span class="badge-desconto">20%</span>
-        </div>
-        <div class="card-info">
-          <div>
-            <h3>Brigadeiro</h3>
-            <p>Cobertura generosa de brigadeiro com granulado belga.</p>
-          </div>
-          <div class="preco-container">
-            <span class="preco">R$ 28,00</span>
-            <span class="preco-antigo">R$ 35,00</span>
-          </div>
+        <div class="controles-quantidade" id="ctrl-Chocolate" onclick="event.stopPropagation()">
+          <button class="btn-adicionar" onclick="adicionarAoCarrinho('Chocolate', 30.00)">Adicionar</button>
         </div>
       </div>
     </div>
 
-    <!-- BEBIDAS -->
     <div class="produtos" id="bebidas">
-      <h2 class="secao-titulo">Bebidas 🥤</h2>
-      
-      <div class="card">
+      <h2 class="secao-titulo">Bebidas</h2>
+
+      <div class="card" data-nome="Refrigerante 2L" data-preco="10.00" data-descricao="Coca-Cola, Guaraná, Fanta ou Sprite. Gelada e refrescante!" data-imagem="https://images.unsplash.com/photo-1581006852262-e4307cf6283a?w=800" onclick="abrirDetalhes(this)">
         <div class="card-imagem">
           <img src="https://images.unsplash.com/photo-1581006852262-e4307cf6283a?w=400" alt="Refrigerante">
         </div>
@@ -555,65 +971,316 @@
             <span class="preco">R$ 10,00</span>
           </div>
         </div>
-      </div>
-
-      <div class="card">
-        <div class="card-imagem">
-          <img src="https://images.unsplash.com/photo-1437418747212-8d9709afab22?w=400" alt="Suco Natural">
-        </div>
-        <div class="card-info">
-          <div>
-            <h3>Suco Natural 500ml</h3>
-            <p>Laranja, limão, maracujá ou morango.</p>
-          </div>
-          <div class="preco-container">
-            <span class="preco">R$ 8,00</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-imagem">
-          <img src="https://media.istockphoto.com/id/2175286400/pt/foto/stack-of-drinking-water-bottles-blue-water-texture-with-droplets-and-frosty-winter-patterns-in.webp?a=1&b=1&s=612x612&w=0&k=20&c=QOY-rQrToWJorSh619bQY3XiO2aWNwxneXrJOp9VFZI=" alt="Água Mineral">
-        </div>
-        <div class="card-info">
-          <div>
-            <h3>Água Mineral 500ml</h3>
-            <p>Água mineral sem gás ou com gás.</p>
-          </div>
-          <div class="preco-container">
-            <span class="preco">R$ 3,50</span>
-          </div>
+        <div class="controles-quantidade" id="ctrl-Refrigerante 2L" onclick="event.stopPropagation()">
+          <button class="btn-adicionar" onclick="adicionarAoCarrinho('Refrigerante 2L', 10.00)">Adicionar</button>
         </div>
       </div>
     </div>
 
   </div>
 
-  <!-- TABS DE NAVEGAÇÃO -->
+  </div>
+
+
   <div class="tabs">
-    <div class="tab active" data-tab="tradicionais">Tradicionais</div>
-    <div class="tab" data-tab="especiais">Especiais</div>
-    <div class="tab" data-tab="doces">Doces</div>
-    <div class="tab" data-tab="bebidas">Bebidas</div>
+    <div class="tab active" onclick="abrirTab('tradicionais', this)">Tradicionais</div>
+    <div class="tab" onclick="abrirTab('especiais', this)">Especiais</div>
+    <div class="tab" onclick="abrirTab('doces', this)">Doces</div>
+    <div class="tab" onclick="abrirTab('bebidas', this)">Bebidas</div>
+  </div>
+
+  <div class="carrinho-flutuante" id="carrinho">
+    <div class="carrinho-content">
+      <div class="carrinho-info">
+        <strong id="carrinhoTotal">0 itens</strong>
+        <small id="carrinhoPreco">R$ 0,00</small>
+      </div>
+      <button class="btn-finalizar" onclick="finalizarPedido()">
+        <span>Fazer Pedido</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- PÁGINA DE DETALHES DO PRODUTO -->
+  <div class="produto-detalhes" id="produtoDetalhes">
+    <div class="detalhes-header">
+      <button class="btn-voltar" onclick="fecharDetalhes()">←</button>
+      <span style="font-weight: 600;">Detalhes do produto</span>
+    </div>
+
+    <img class="detalhes-imagem" id="detalhesImagem" src="" alt="">
+
+    <div class="detalhes-content">
+      <h2 class="detalhes-titulo" id="detalhesTitulo"></h2>
+
+      <div class="detalhes-preco" id="detalhesPreco"></div>
+
+      <p class="detalhes-descricao" id="detalhesDescricao"></p>
+
+      <div class="detalhes-observacoes">
+        <label for="observacoesInput">Observações</label>
+        <textarea class="observacoes-input" id="observacoesInput" placeholder="Ex.: Tirar cebola, sem azeitona, etc."></textarea>
+      </div>
+    </div>
+
+    <div class="detalhes-footer">
+      <div class="detalhes-footer-content">
+        <div class="detalhes-controles">
+          <button class="btn-detalhes-quantidade" onclick="diminuirDetalhes()">−</button>
+          <span class="detalhes-quantidade-display" id="detalhesQuantidade">1</span>
+          <button class="btn-detalhes-quantidade" onclick="aumentarDetalhes()">+</button>
+        </div>
+        <button class="btn-detalhes-adicionar" onclick="adicionarDetalhes()">
+          <span>Adicionar</span>
+          <span id="detalhesPrecoBtn">R$ 0,00</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <script>
-    const tabs = document.querySelectorAll(".tab");
-    const sections = document.querySelectorAll(".produtos");
+    let carrinho = [];
+    let produtoAtual = null;
+    let quantidadeDetalhes = 1;
 
-    tabs.forEach(tab => {
-      tab.addEventListener("click", () => {
-        tabs.forEach(t => t.classList.remove("active"));
-        tab.classList.add("active");
+    // CARROSSEL
+    let indiceCarrossel = 0;
 
-        sections.forEach(s => s.classList.remove("active"));
-        document.getElementById(tab.dataset.tab).classList.add("active");
+    function scrollCarrossel(direcao) {
+      const container = document.getElementById('carrosselContainer');
+      const cards = container.querySelectorAll('.card');
+      
+      indiceCarrossel += direcao;
+      
+      // Limita o índice
+      if (indiceCarrossel < 0) indiceCarrossel = 0;
+      if (indiceCarrossel >= cards.length) indiceCarrossel = cards.length - 1;
+      
+      // Scroll para o card específico
+      const cardWidth = container.clientWidth;
+      container.scrollTo({
+        left: indiceCarrossel * (cardWidth + 16), // largura + gap
+        behavior: 'smooth'
+      });
+      
+      atualizarBotoesCarrossel();
+    }
 
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    function atualizarBotoesCarrossel() {
+      const container = document.getElementById('carrosselContainer');
+      const btnPrev = document.getElementById('btnPrev');
+      const btnNext = document.getElementById('btnNext');
+      const cards = container.querySelectorAll('.card');
+
+      if (!container || !btnPrev || !btnNext) return;
+
+      btnPrev.disabled = indiceCarrossel <= 0;
+      btnNext.disabled = indiceCarrossel >= cards.length - 1;
+    }
+
+    // Atualiza botões ao carregar
+    document.addEventListener('DOMContentLoaded', () => {
+      atualizarBotoesCarrossel();
+    });
+    
+    function abrirTab(id, el) {
+      document.querySelectorAll('.produtos').forEach(p => p.classList.remove('active'));
+      document.getElementById(id)?.classList.add('active');
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      atualizarBottom();
+    }
+
+    function abrirDetalhes(card) {
+      const nome = card.dataset.nome;
+      const preco = parseFloat(card.dataset.preco);
+      const precoAntigo = card.dataset.precoAntigo;
+      const desconto = card.dataset.desconto;
+      const descricao = card.dataset.descricao;
+      const imagem = card.dataset.imagem;
+
+      produtoAtual = {
+        nome,
+        preco,
+        precoAntigo,
+        desconto,
+        descricao,
+        imagem
+      };
+      quantidadeDetalhes = 1;
+
+      document.getElementById('detalhesImagem').src = imagem;
+      document.getElementById('detalhesTitulo').textContent = nome;
+      document.getElementById('detalhesDescricao').textContent = descricao;
+
+      const precoContainer = document.getElementById('detalhesPreco');
+      precoContainer.innerHTML = `
+        <span class="detalhes-preco-atual">R$ ${preco.toFixed(2).replace('.', ',')}</span>
+        ${precoAntigo ? `<span class="detalhes-preco-antigo">R$ ${parseFloat(precoAntigo).toFixed(2).replace('.', ',')}</span>` : ''}
+        ${desconto ? `<span class="detalhes-badge">${desconto}</span>` : ''}
+      `;
+
+      document.getElementById('detalhesQuantidade').textContent = quantidadeDetalhes;
+      document.getElementById('detalhesPrecoBtn').textContent = `R$ ${(preco * quantidadeDetalhes).toFixed(2).replace('.', ',')}`;
+      document.getElementById('observacoesInput').value = '';
+
+      document.getElementById('produtoDetalhes').classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function fecharDetalhes() {
+      document.getElementById('produtoDetalhes').classList.remove('show');
+      document.body.style.overflow = '';
+      produtoAtual = null;
+    }
+
+    function aumentarDetalhes() {
+      quantidadeDetalhes++;
+      document.getElementById('detalhesQuantidade').textContent = quantidadeDetalhes;
+      document.getElementById('detalhesPrecoBtn').textContent = `R$ ${(produtoAtual.preco * quantidadeDetalhes).toFixed(2).replace('.', ',')}`;
+    }
+
+    function diminuirDetalhes() {
+      if (quantidadeDetalhes > 1) {
+        quantidadeDetalhes--;
+        document.getElementById('detalhesQuantidade').textContent = quantidadeDetalhes;
+        document.getElementById('detalhesPrecoBtn').textContent = `R$ ${(produtoAtual.preco * quantidadeDetalhes).toFixed(2).replace('.', ',')}`;
+      }
+    }
+
+    function adicionarDetalhes() {
+      if (!produtoAtual) return;
+
+      const observacoes = document.getElementById('observacoesInput').value.trim();
+
+      for (let i = 0; i < quantidadeDetalhes; i++) {
+        const idx = carrinho.findIndex(item =>
+          item.nome === produtoAtual.nome && item.observacoes === observacoes
+        );
+
+        if (idx > -1) {
+          carrinho[idx].qtd += 1;
+        } else {
+          carrinho.push({
+            nome: produtoAtual.nome,
+            preco: produtoAtual.preco,
+            qtd: 1,
+            observacoes: observacoes
+          });
+        }
+      }
+
+      atualizarCarrinho();
+      atualizarControles(produtoAtual.nome);
+      fecharDetalhes();
+    }
+
+    function adicionarAoCarrinho(nome, preco) {
+      const idx = carrinho.findIndex(i => i.nome === nome && !i.observacoes);
+      if (idx > -1) {
+        carrinho[idx].qtd += 1;
+      } else {
+        carrinho.push({
+          nome,
+          preco,
+          qtd: 1,
+          observacoes: ''
+        });
+      }
+      atualizarCarrinho();
+      atualizarControles(nome);
+    }
+
+    function diminuirQuantidade(nome) {
+      const idx = carrinho.findIndex(i => i.nome === nome && !i.observacoes);
+      if (idx > -1) {
+        carrinho[idx].qtd -= 1;
+        if (carrinho[idx].qtd <= 0) {
+          carrinho.splice(idx, 1);
+        }
+        atualizarCarrinho();
+        atualizarControles(nome);
+      }
+    }
+
+    function atualizarControles(nome) {
+      const item = carrinho.find(i => i.nome === nome && !i.observacoes);
+      const ctrl = document.getElementById('ctrl-' + nome);
+
+      if (!ctrl) return;
+
+      if (item && item.qtd > 0) {
+        ctrl.innerHTML = `
+          <button class="btn-quantidade" onclick="diminuirQuantidade('${nome.replace(/'/g, "\\'")}')">−</button>
+          <span class="quantidade-display">${item.qtd}</span>
+          <button class="btn-quantidade" onclick="adicionarAoCarrinho('${nome.replace(/'/g, "\\'")}', ${item.preco})">+</button>
+        `;
+      } else {
+        const preco = parseFloat(ctrl.closest('.card').dataset.preco);
+        ctrl.innerHTML = `
+          <button class="btn-adicionar" onclick="adicionarAoCarrinho('${nome.replace(/'/g, "\\'")}', ${preco})">Adicionar</button>
+        `;
+      }
+    }
+
+    function atualizarCarrinho() {
+      const totalQtd = carrinho.reduce((s, it) => s + it.qtd, 0);
+      const carrinhoEl = document.getElementById('carrinho');
+
+      if (totalQtd > 0) {
+        carrinhoEl.classList.add('show');
+      } else {
+        carrinhoEl.classList.remove('show');
+      }
+
+      document.getElementById('carrinhoTotal').textContent = totalQtd + (totalQtd === 1 ? " item" : " itens");
+      const total = carrinho.reduce((s, it) => s + it.preco * it.qtd, 0);
+      document.getElementById('carrinhoPreco').textContent = "R$ " + total.toFixed(2).replace('.', ',');
+
+      atualizarBottom();
+    }
+
+    function finalizarPedido() {
+      if (carrinho.length === 0) {
+        alert('Seu carrinho está vazio!');
+        return;
+      }
+      const total = carrinho.reduce((a, b) => a + b.preco * b.qtd, 0).toFixed(2);
+      let msg = "🍕 *Pedido Bella Vita:*%0A%0A";
+      carrinho.forEach(item => {
+        msg += `${item.qtd}x ${item.nome} - R$ ${(item.preco * item.qtd).toFixed(2).replace('.', ',')}`;
+        if (item.observacoes) {
+          msg += `%0A   _Obs: ${item.observacoes}_`;
+        }
+        msg += `%0A`;
+      });
+      msg += `%0A*Total: R$ ${total.replace('.', ',')}*`;
+
+      window.open("https://wa.me/5518996706032?text=" + msg, "_blank");
+    }
+
+    function atualizarBottom() {
+      const tabs = document.querySelector('.tabs');
+      const carrinhoEl = document.getElementById('carrinho');
+      if (!tabs || !carrinhoEl) return;
+      const tabsHeight = tabs.offsetHeight || 0;
+      carrinhoEl.style.bottom = tabsHeight + 'px';
+      document.body.style.paddingBottom = (140 + tabsHeight) + 'px';
+    }
+
+    window.addEventListener('load', () => {
+      atualizarBottom();
+      window.addEventListener('resize', atualizarBottom);
+    });
+
+    document.getElementById('buscaInput').addEventListener('input', e => {
+      const termo = e.target.value.toLowerCase();
+      document.querySelectorAll('.card').forEach(c => {
+        const nome = (c.dataset.nome || '').toLowerCase();
+        c.classList.toggle('hidden', !nome.includes(termo));
       });
     });
   </script>
-
 </body>
+
 </html>
